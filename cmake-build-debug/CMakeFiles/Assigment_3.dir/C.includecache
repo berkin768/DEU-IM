@@ -1,0 +1,52 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/berkin/ClionProjects/Assigment 3/client.c
+stdio.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+string.h
+-
+zconf.h
+-
+stdlib.h
+-
+split.h
+/home/berkin/ClionProjects/Assigment 3/split.h
+
+/home/berkin/ClionProjects/Assigment 3/server.c
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+unistd.h
+-
+pthread.h
+-
+server.h
+/home/berkin/ClionProjects/Assigment 3/server.h
+
+/home/berkin/ClionProjects/Assigment 3/server.h
+
+/home/berkin/ClionProjects/Assigment 3/split.h
+stdio.h
+/home/berkin/ClionProjects/Assigment 3/stdio.h
+string.h
+/home/berkin/ClionProjects/Assigment 3/string.h
+stdlib.h
+/home/berkin/ClionProjects/Assigment 3/stdlib.h
+

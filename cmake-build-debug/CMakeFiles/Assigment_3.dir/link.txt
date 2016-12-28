@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/Assigment_3.dir/server.c.o CMakeFiles/Assigment_3.dir/client.c.o  -o Assigment_3 
