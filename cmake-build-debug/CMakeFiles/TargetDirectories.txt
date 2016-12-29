@@ -1,0 +1,3 @@
+/home/berkin/ClionProjects/Assigment 3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/berkin/ClionProjects/Assigment 3/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/berkin/ClionProjects/Assigment 3/cmake-build-debug/CMakeFiles/Assigment_3.dir
