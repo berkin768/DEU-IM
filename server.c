@@ -8,15 +8,16 @@
 #include "split.h"
 
 #define MAX_CLIENT_NUMBER 100
+#define PASSWORD_LENGTH 40
 
 void *connection_handler(void *);
 
 struct User searchUser(char searchName[10]);
 
-
 struct User {
     char userName[10];
     int  clientSocketNo;
+    char password[40];
 };
 
 struct Group {
@@ -25,11 +26,39 @@ struct Group {
     int         groupSize;
 };
 
+struct Message{
+    char message[2000];
+    int socketNo;
+};
+
 unsigned int clientNumber    = 0;
 unsigned int userArrayIndex  = 0;
 unsigned int groupArrayIndex = 0;
 struct User  users[MAX_CLIENT_NUMBER];
 struct Group group[20];
+
+char *createPassword(int length) {
+    char *string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.-#'?!";
+    size_t stringLen = 26*2+10+7;
+    char *randomString;
+
+    randomString = malloc(sizeof(char) * (length +1));
+
+    if (!randomString) {
+        return (char*)0;
+    }
+
+    unsigned int key = 0;
+
+    for (int n = 0;n < length;n++) {
+        key = rand() % stringLen;
+        randomString[n] = string[key];
+    }
+
+    randomString[length] = '\0';
+
+    return randomString;
+}
 
 //FOR GETUSERS COMMAND
 void getUsers(int socketNumber) {
@@ -56,23 +85,26 @@ void getUsers(int socketNumber) {
 }
 
 //AFTER LOGIN COMMAND, ADD TO THE ARRAY
-void addUserToArray(char userName[10], int socketNumber) {
+void addUserToArray(char userName[10], int socketNumber, char password[40]) {
     printf("Client logged in as %s\n", userName);
     strcpy(users[userArrayIndex].userName, userName);
     users[userArrayIndex].clientSocketNo = socketNumber;
+    strcpy(users[userArrayIndex].password,password);
     userArrayIndex++;
 }
 
 //LOGIN COMMAND
-void loginUser(char userName[10], int socketNumber) {
+void loginUser(char userName[10], int socketNumber, char password[40]) {
     char *message = "login successful";
     write(socketNumber, message, strlen(message) + 1);
-    addUserToArray(userName, socketNumber);
+    addUserToArray(userName, socketNumber,password);
 }
 
 //SEND MESSAGE IF USER FOUND
-void sendMessage(int clientSocketNumber, char *message) {
-    write(clientSocketNumber, message, strlen(message) + 1);
+void *sendMessage(void* context/*int clientSocketNumber, char *message*/) {
+    struct Message *messageStruct = context;
+    write(messageStruct->socketNo, messageStruct->message, strlen(messageStruct->message) + 1);
+    //write(clientSocketNumber, message, strlen(message) + 1);
 }
 
 //SEND MESSAGE IF GROUP FOUND
@@ -157,119 +189,9 @@ int checkMultiGroup(char groupName[20]) {
         return -1;
 }
 
-//THREAD?
-void *receivedMessage(void *sock){
-    char receivedMessage[2000];  //client's message
-    int  isLogged         = -1;
-    int  readControl;
-    int  parsedItemNumber = 0;
-
-    int new_sock = *((int *)sock);
-    while ((readControl = recv(new_sock, receivedMessage, 2000, 0)) > 0) {
-        char *parsedCommand[50]; //parsedClientMessage
-
-        parsedItemNumber = parsing(parsedCommand, receivedMessage, " ");
-
-        if (strcmp(parsedCommand[0], "login") == 0 && parsedCommand[1] != NULL) {
-            if (isLogged != 0)
-                isLogged = checkLogin(parsedCommand[1]);
-
-            else{
-                sendMessage(new_sock, "One login in one client");
-                continue;
-            }
-
-            if (isLogged != 1)
-                loginUser(parsedCommand[1], new_sock);
-
-            else
-                sendMessage(new_sock, "You can login only once");
-
-
-        } else if (isLogged != -1 & strcmp(parsedCommand[0], "getusers") == 0) {
-            getUsers(new_sock);
-
-        } else if (isLogged != -1 & strcmp(parsedCommand[0], "alias") == 0 && parsedCommand[1] != NULL &&
-                   parsedCommand[2] != NULL) {
-            int isCreatedBefore = checkMultiGroup(parsedCommand[1]);
-
-            if (isCreatedBefore == 0) {
-                createGroup(parsedCommand[1], parsedCommand[2], new_sock);
-            } else {
-                sendMessage(new_sock, "You can't create same group");
-            }
-        }
-        else {
-            if (isLogged == -1) {
-                char *errorMessage = "You must login first";
-                sendMessage(new_sock, errorMessage);
-                printf("hi");
-            }
-
-            if (isLogged == 0 && parsedCommand[0] != NULL) {
-
-                struct User  find;
-                memset(&find, 0, sizeof(struct User));
-                struct Group findGroup;
-                memset(&findGroup, 0, sizeof(struct User));
-
-                find= searchUser(parsedCommand[0]);
-                findGroup= searchGroup(parsedCommand[0]);
-                printf("BURADAYIM %s\n",parsedCommand[0]);
-                int control = 0;
-
-                if (strcmp(find.userName, "") != 0) {
-                    puts("burası");
-                    char *message = malloc(2000);
-                    if (parsedCommand[1] != NULL) {
-                        strcpy(message, parsedCommand[1]);
-                        strcat(message, " ");
-                    }
-                    for (int i = 2; i < parsedItemNumber; ++i) {
-                        strcat(message, parsedCommand[i]);
-                        strcat(message, " ");
-                    }
-                    control = 1;
-                    sendMessage(find.clientSocketNo, message);
-                }
-                if (strcmp(findGroup.groupName, "") != 0) {
-                    printf("AHA GRUP ADI SON > %s\n",findGroup.groupName);
-
-                    char *message = malloc(2000);
-                    if (parsedCommand[1] != NULL) {
-                        strcpy(message, parsedCommand[1]);
-                        strcat(message, " ");
-                    }
-                    for (int i = 2; i < parsedItemNumber; ++i) {
-                        strcat(message, parsedCommand[i]);
-                        strcat(message, " ");
-                    }
-                    control = 1;
-                    sendMessageToGroup(findGroup, message);
-                }
-                if(control == 0){
-                    puts("burası3");
-                    char *errorMessage = "There is no user or group with this name ";
-                    sendMessage(new_sock, errorMessage);
-                }
-            }
-        }
-    }
-
-    if (readControl == 0) {
-        puts("Client disconnected");
-
-        deleteUser(new_sock);
-        clientNumber--;
-        fflush(stdout);
-    } else if (readControl == -1) {
-        perror("recv failed");
-    }
-}
-
 void *connection_handler(void *socket_desc) {
     //Get the socket descriptor
-
+    pthread_t sendThread;
     int  sock             = *((int *) socket_desc);
     char receivedMessage[2000];  //client's message
     int  isLogged         = -1;
@@ -287,16 +209,42 @@ void *connection_handler(void *socket_desc) {
                 isLogged = checkLogin(parsedCommand[1]);
 
             else{
-                sendMessage(sock, "One login in one client");
+                struct Message message;
+                message.socketNo = sock;
+                strcpy(message.message,"Login First");
+                pthread_create(&sendThread,NULL,sendMessage,&message);
+                pthread_join(sendThread,NULL);
                 continue;
             }
 
-            if (isLogged != 1)
-                loginUser(parsedCommand[1], sock);
+            if (isLogged != 1){
+                char *password;
+                password = createPassword(PASSWORD_LENGTH);
+                loginUser(parsedCommand[1], sock,password);
 
-            else
-                sendMessage(sock, "You can login only once");
+                printf("Secret key generated for %s as %s\n",parsedCommand[1],password);
 
+                char *sendPassword = malloc(100);
+
+                strcpy(sendPassword,"password*");
+                strcat(sendPassword,password);
+
+                struct Message message;
+                message.socketNo = sock;
+                strcpy(message.message,sendPassword);
+                pthread_create(&sendThread,NULL,sendMessage,&message);
+                pthread_join(sendThread,NULL);
+                free(sendPassword);
+            }
+
+            else{
+                struct Message message;
+                message.socketNo = sock;
+                strcpy(message.message,"One login in one client");
+                pthread_create(&sendThread,NULL,sendMessage,&message);
+                pthread_join(sendThread,NULL);
+
+            }
 
         } else if (isLogged != -1 & strcmp(parsedCommand[0], "getusers") == 0) {
             getUsers(sock);
@@ -308,13 +256,23 @@ void *connection_handler(void *socket_desc) {
             if (isCreatedBefore == 0) {
                 createGroup(parsedCommand[1], parsedCommand[2], sock);
             } else {
-                sendMessage(sock, "You can't create same group");
+                struct Message message;
+                message.socketNo = sock;
+                strcpy(message.message,"You can't create same group");
+                pthread_create(&sendThread,NULL,sendMessage,&message);
+                pthread_join(sendThread,NULL);
+
             }
         }
         else {
             if (isLogged == -1) {
                 char *errorMessage = "You must login first";
-                sendMessage(sock, errorMessage);
+                struct Message message;
+                message.socketNo = sock;
+                strcpy(message.message,errorMessage);
+                pthread_create(&sendThread,NULL,sendMessage,&message);
+                pthread_join(sendThread,NULL);
+
             }
 
             if (isLogged == 0 && parsedCommand[0] != NULL) {
@@ -335,7 +293,14 @@ void *connection_handler(void *socket_desc) {
                         strcat(message, " ");
                     }
                     control = 1;
-                    sendMessage(find.clientSocketNo, message);
+
+                    struct Message messageObject;
+                    messageObject.socketNo = find.clientSocketNo;
+                    strcpy(messageObject.message,message);
+                    pthread_create(&sendThread,NULL,sendMessage,&messageObject);
+                    pthread_join(sendThread,NULL);
+
+
                 }
                 if (strcmp(findGroup.groupName, "") != 0) {
                     char *message = malloc(2000);
@@ -348,11 +313,17 @@ void *connection_handler(void *socket_desc) {
                         strcat(message, " ");
                     }
                     control = 1;
+
                     sendMessageToGroup(findGroup, message);
                 }
                 if(control == 0){
                     char *errorMessage = "There is no user or group with this name ";
-                    sendMessage(sock, errorMessage);
+                    struct Message messageObject;
+                    messageObject.socketNo = sock;
+                    strcpy(messageObject.message,errorMessage);
+                    pthread_create(&sendThread,NULL,sendMessage,&messageObject);
+                    pthread_join(sendThread,NULL);
+
                 }
             }
         }
@@ -368,13 +339,6 @@ void *connection_handler(void *socket_desc) {
         perror("recv failed");
     }
     pthread_t send_thread, receive_thread;
-    //pthread_create(&send_thread, NULL, sendMessage, (void *) new_sock);
-    //pthread_create(&receive_thread, NULL, receivedMessage, socket_desc);
-
-    //pthread_join(send_thread, NULL);
-    //pthread_join(receive_thread, NULL);
-
-
 
     //Free the socket pointer
     free(socket_desc);
