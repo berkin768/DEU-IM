@@ -1,4 +1,5 @@
 /opt/clion-2016.3.1/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/home/berkin/ClionProjects/Assigment 3"
+<<<<<<< HEAD
 -- The C compiler identification is GNU 5.4.0
 -- The CXX compiler identification is GNU 5.4.0
 -- Check for working C compiler: /usr/bin/cc
@@ -13,6 +14,8 @@
 -- Detecting CXX compiler ABI info - done
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
+=======
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/berkin/ClionProjects/Assigment 3/cmake-build-debug

@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
   "../CMakeLists.txt"
+<<<<<<< HEAD
   "CMakeFiles/3.6.3/CMakeCCompiler.cmake"
   "CMakeFiles/3.6.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.6.3/CMakeSystem.cmake"
@@ -88,6 +89,23 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake"
   "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Internal/FeatureTesting.cmake"
   "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-CXX.cmake"
+=======
+  "CMakeFiles/3.6.2/CMakeCCompiler.cmake"
+  "CMakeFiles/3.6.2/CMakeCXXCompiler.cmake"
+  "CMakeFiles/3.6.2/CMakeSystem.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeCInformation.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeCXXInformation.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeCommonLanguageInclude.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeFindCodeBlocks.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeGenericSystem.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeLanguageInformation.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeSystemSpecificInformation.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/CMakeSystemSpecificInitialize.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Compiler/GNU-C.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Compiler/GNU-CXX.cmake"
+  "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Compiler/GNU.cmake"
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
   "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-GNU-C.cmake"
   "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-GNU-CXX.cmake"
   "/opt/clion-2016.3.1/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-GNU.cmake"
@@ -104,11 +122,14 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
+<<<<<<< HEAD
   "CMakeFiles/3.6.3/CMakeSystem.cmake"
   "CMakeFiles/3.6.3/CMakeCCompiler.cmake"
   "CMakeFiles/3.6.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.6.3/CMakeCCompiler.cmake"
   "CMakeFiles/3.6.3/CMakeCXXCompiler.cmake"
+=======
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 

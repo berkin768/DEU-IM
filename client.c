@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "semaphore.h"
+<<<<<<< HEAD
 #include "split.h"
 #include "stdlib.h"
 
@@ -95,24 +96,50 @@ void *sendMessage(void *sock_desc) {
 
         encode(message, password); //THIS FUNCTION DOESNT WORK
 
+=======
+
+//sem_t semaphore;
+void *sendMessage(void *sock_desc) {
+    //Send some data
+
+    while (1) {
+        //sem_wait(&semaphore);
+
+        char message[2000];
+        printf("> ");
+        //sem_post(&semaphore);
+            scanf("%[^\n]%*c", message);
+        fflush(stdin);
+
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
         if (send(*((int *) sock_desc), message, strlen(message) + 1, 0) < 0) {
             puts("Send failed");
             exit(1);
         }
+<<<<<<< HEAD
+=======
+        //sleep(1);
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
 
     }
 }
 
 void *receiveMessage(void *sock_desc) {
+<<<<<<< HEAD
 
     char *parsedMessage[30];
     while (1) {
+=======
+    while (1) {
+        //sem_wait(&semaphore);
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
 
         char server_reply[2000];
         if (recv(*((int *) sock_desc), server_reply, 2000, 0) < 0) {
             puts("recv failed");
             exit(1);
         }
+<<<<<<< HEAD
         char *tempServer_reply = server_reply;
         parsing(parsedMessage, tempServer_reply, "*");
         if (strcmp(parsedMessage[0], "password") == 0) {
@@ -120,6 +147,13 @@ void *receiveMessage(void *sock_desc) {
         } else {
             printf("\033[32;1m%s\033[0m\n", server_reply);
         }
+=======
+
+        //Receive a reply from the server
+        printf("\033[32;1m %s \033[0m\n", server_reply);
+
+        //sem_post(&semaphore);
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
     }
 }
 
@@ -151,14 +185,28 @@ int main(int argc, char *argv[]) {
 
     pthread_t send_thread, receive_thread;
 
+<<<<<<< HEAD
     pthread_create(&receive_thread, NULL, receiveMessage, (void *) new_sock);
     pthread_create(&send_thread, NULL, sendMessage, (void *) new_sock);
 
 
+=======
+    //sem_init(&semaphore, 0, 1);
+    //pthread_mutex_init(&lock, NULL);
+
+
+    pthread_create(&send_thread, NULL, sendMessage, (void *) new_sock);
+    pthread_create(&receive_thread, NULL, receiveMessage, (void *) new_sock);
+
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
     pthread_join(send_thread, NULL);
     pthread_join(receive_thread, NULL);
 
 
     close(sock);
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ca6cdab592a526ba74a53954cc0028eb277346cd
